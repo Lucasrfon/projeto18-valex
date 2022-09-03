@@ -1,4 +1,4 @@
-import { connection } from "../dbStrategy/database.js";
+import { connection } from "../dbStrategy/database"
 
 export interface Company {
   id: number;
