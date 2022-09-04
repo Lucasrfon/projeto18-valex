@@ -5,7 +5,7 @@ import newCardSchema from "../schemas/newCardSchema";
 
 const cardRouter = Router();
 
-cardRouter.post('/card', validateSchema(newCardSchema), requestCardCreation);
+cardRouter.post('/card', validateSchema(newCardSchema), requestCardCreation); //falta API e cryptr
 cardRouter.patch('/activate');
 // cardRouter.get('/card');
 cardRouter.patch('/block')
