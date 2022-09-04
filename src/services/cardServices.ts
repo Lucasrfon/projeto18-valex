@@ -1,5 +1,6 @@
+import bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
-import { findByTypeAndEmployeeId, insert, TransactionTypes } from "../repositories/cardRepository";
+import { Card, findByCardDetails, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
 import { findByApiKey } from "../repositories/companyRepository";
 import { findById } from "../repositories/employeeRepository";
 
@@ -15,7 +16,7 @@ export async function isValidEmployee(id: number) {
     if(employee) {
         return employee.fullName
     }
-    throw { type: "employee id", message: "Invalid employee id" }
+    throw { type: "not found", message: "Invalid employee id" }
 }
 
 export async function isUniqueCardType(id: number, type: TransactionTypes) {
@@ -45,4 +46,55 @@ export async function generateCard(employeeId: number, type: TransactionTypes, f
         isBlocked: true,
         type
     })
+}
+
+export async function isRegistredCard(number: string, cardholderName: string, expirationDate: string) {
+    const findSecurityCode = await findByCardDetails(number, cardholderName, expirationDate);
+
+    if(findSecurityCode) {
+        return findSecurityCode
+    }
+
+    throw { type: "not found", message: "Invalid card" }
+}
+
+export async function isValidCVV(card: Card, cvv: string) {
+    if(card.securityCode === cvv) {
+        return
+    }
+
+    throw { type: "not found", message: "Invalid card" }
+}
+
+export async function isExpired(card: Card) {
+    const today = new Date();
+    const month = today.getMonth();
+    const year = parseInt(today.getFullYear().toString().slice(2));
+
+    if(year < parseInt(card.expirationDate.slice(3))) {
+        return
+    };
+
+    if(year > parseInt(card.expirationDate.slice(3))) {
+        throw { type: "denied", message: "Card expired" }
+    }
+    
+    if(month <= parseInt(card.expirationDate.slice(0, 2))) {
+        return
+    }
+    
+    throw { type: "denied", message: "Card expired" }
+}
+
+export async function isActiveCard(card: Card) {
+    if(card.password) {
+        throw { type: "registred", message: "Card already activated" }
+    }
+    return
+}
+
+export async function activateCard(card: Card, rawPassword: string) {
+    const password = bcrypt.hashSync(rawPassword, 5);
+
+    await update(card.id, {...card, password});
 }
