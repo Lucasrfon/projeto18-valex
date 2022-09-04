@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { TransactionTypes } from "../repositories/cardRepository";
-import { isUniqueCardType, isValidAPIKey, isValidEmployee } from "../services/cardServices";
+import { generateCard, isUniqueCardType, isValidAPIKey, isValidEmployee } from "../services/cardServices";
 
 export async function requestCardCreation(req: Request, res: Response) {
     const { employeeId, type }: {employeeId: number, type: TransactionTypes} = req.body;
@@ -11,11 +11,10 @@ export async function requestCardCreation(req: Request, res: Response) {
     }
 
     await isValidAPIKey(authorization);
-    await isValidEmployee(employeeId);
+    const fullName = await isValidEmployee(employeeId);
+    //Depois implementar verificação do usuário pertencer a empresa
     await isUniqueCardType(employeeId, type);
+    await generateCard(employeeId, type, fullName);
 
-
-    // await generateCard(employeeId, type);
-
-    res.status(201).send('ajustar com número do card e outras cositas')
+    res.status(201).send('');
 }
