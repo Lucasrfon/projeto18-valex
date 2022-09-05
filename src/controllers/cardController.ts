@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { TransactionTypes } from "../repositories/cardRepository";
-import { activateCard, checkPassword, generateCard, isActiveCard, isCardBlocked, isExpired, isRegistredCard, isUniqueCardType, isValidAPIKey, isValidCVV, isValidEmployee, toggleBlock } from "../services/cardServices";
+import { isValidAPIKey } from "../services/APIServices";
+import { activateCard, checkPassword, generateCard, isActiveCard, isCardBlocked, isExpired, isRegistredCard, isUniqueCardType, isValidCVV, isValidEmployee, toggleBlock } from "../services/cardServices";
 
 export async function requestCardCreation(req: Request, res: Response) {
     const { employeeId, type }: {employeeId: number, type: TransactionTypes} = req.body;

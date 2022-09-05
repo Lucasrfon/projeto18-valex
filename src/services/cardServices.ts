@@ -1,15 +1,7 @@
 import bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
 import { Card, findByCardDetails, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
-import { findByApiKey } from "../repositories/companyRepository";
 import { findById } from "../repositories/employeeRepository";
-
-export async function isValidAPIKey(APIKey: string) {
-    if(await findByApiKey(APIKey)) {
-        return
-    }
-    throw { type: "unauthorized", message: "Invalid API Key" }
-}
 
 export async function isValidEmployee(id: number) {
     const employee = await findById(id)
