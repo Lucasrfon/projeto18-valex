@@ -1,7 +1,9 @@
 import bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
+import Cryptr from 'cryptr';
 import { Card, findByCardDetails, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
 import { findById } from "../repositories/employeeRepository";
+const cryptr = new Cryptr('myTotallySecretKey');
 
 export async function isValidEmployee(id: number) {
     const employee = await findById(id)
@@ -19,14 +21,17 @@ export async function isUniqueCardType(id: number, type: TransactionTypes) {
 
 export async function generateCard(employeeId: number, type: TransactionTypes, fullName: string) {
     const today = new Date();
+    const month = today.getMonth();
+    const expirationYear = parseInt(today.getFullYear().toString().slice(2)) + 5;
     const cardNameArray = fullName.toUpperCase().split(" ").filter(name => name.length >= 3);
     for(let i = 1; i < cardNameArray.length - 1; i ++) {
         cardNameArray[i] = cardNameArray[i][0];
     }
     const cardholderName = cardNameArray.join(" ");
     const number = faker.finance.creditCardNumber('63[7-9]#-####-####-###L');
-    const expirationDate = `${today.getMonth() < 10 ? '0' + today.getMonth() : today.getMonth()}/${parseInt(today.getFullYear().toString().slice(2)) + 5}`;
-    const securityCode = faker.finance.creditCardCVV();
+    const expirationDate = `${month < 10 ? '0' + month : month}/${expirationYear}`;
+    const cvv = faker.finance.creditCardCVV();
+    const securityCode = cryptr.encrypt(cvv);
 
     await insert({
         employeeId,

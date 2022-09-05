@@ -9,7 +9,6 @@ const cardRouter = Router();
 
 cardRouter.post('/card', validateSchema(newCardSchema), requestCardCreation); //falta API e cryptr
 cardRouter.put('/activate', validateSchema(cardActivationSchema), requestCardActivation);
-// cardRouter.get('/card');
 cardRouter.put('/block', validateSchema(cardIdentifierSchema), toggleCardBlock);
 cardRouter.put('/unblock', validateSchema(cardIdentifierSchema), toggleCardBlock);
 

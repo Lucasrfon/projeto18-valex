@@ -35,3 +35,13 @@ export async function requestPurchase(req: Request, res: Response) {
 
     res.status(200).send('Compra realizada')
 }
+
+export async function requestCardHistory(req: Request, res: Response) {
+    const id = parseInt(req.params.id);
+
+    if(!id) {
+        throw { type: "not found", message: "Invalid card" }
+    }
+
+    
+}

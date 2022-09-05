@@ -5,13 +5,13 @@ import { activateCard, checkPassword, generateCard, isActiveCard, isCardBlocked,
 
 export async function requestCardCreation(req: Request, res: Response) {
     const { employeeId, type }: {employeeId: number, type: TransactionTypes} = req.body;
-    const { authorization } = req.headers;
+    const APIKey = req.headers["x-api-key"];
 
-    if(!authorization) {
+    if(!APIKey) {
         throw { type: "unauthorized", message: "API Key needed" }
     }
 
-    await isValidAPIKey(authorization);
+    await isValidAPIKey(APIKey.toString());
     await isUniqueCardType(employeeId, type);
     const fullName = await isValidEmployee(employeeId);
     //Depois implementar verificação do usuário pertencer a empresa
