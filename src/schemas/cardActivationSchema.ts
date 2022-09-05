@@ -1,6 +1,4 @@
 import joi from 'joi';
-import joiDate from '@joi/date';
-const extendedJoi = joi.extend(joiDate)
 
 const cardActivationSchema = joi.object({
     "id": joi.number().integer().greater(0).required(),

@@ -1,17 +1,7 @@
 import { findById } from "../repositories/businessRepository";
-import { Card, findByTypeAndEmployeeId, TransactionTypes } from "../repositories/cardRepository";
+import { Card } from "../repositories/cardRepository";
 import { findByCardId as findPayments, insert as insertPayment } from "../repositories/paymentRepository";
 import { findByCardId as findRecharges, insert as insertRecharge } from "../repositories/rechargeRepository";
-
-export async function isRegistredCard(employeeId: number, type: TransactionTypes) {
-    const findCard = await findByTypeAndEmployeeId(type, employeeId);
-
-    if(findCard) {
-        return findCard
-    }
-
-    throw { type: "not found", message: "Invalid card" }
-}
 
 export async function isActiveCard(card: Card) {
     if(card.password) {

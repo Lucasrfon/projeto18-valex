@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { isValidAPIKey } from "../services/APIServices";
-import { checkPassword, isExpired, isRegistredCard as isRegistredPersonalCard } from "../services/cardServices";
-import { checkBalance, compareShopCardType, isActiveCard, isBlocked, isRegisteredBusiness, isRegistredCard, purchase, rechargeCard } from "../services/transactionsServices";
+import { checkPassword, isExpired, isRegistredCard, isRegistredCard as isRegistredPersonalCard } from "../services/cardServices";
+import { checkBalance, compareShopCardType, isActiveCard, isBlocked, isRegisteredBusiness, purchase, rechargeCard } from "../services/transactionsServices";
 
 export async function requestRecharge(req: Request, res: Response) {
-    const { employeeId, type, amount } = req.body;
+    const { id, amount } = req.body;
     const APIKey = req.headers["x-api-key"];
 
     if(!APIKey) {
@@ -12,7 +12,7 @@ export async function requestRecharge(req: Request, res: Response) {
     }
 
     await isValidAPIKey(APIKey.toString());
-    const card = await isRegistredCard(employeeId, type);
+    const card = await isRegistredCard(id);
     await isActiveCard(card);
     await isExpired(card);
     await rechargeCard(card, amount);
