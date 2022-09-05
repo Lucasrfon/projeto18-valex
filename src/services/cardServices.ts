@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
 import Cryptr from 'cryptr';
-import { Card, find, findByCardDetails, findById as findCardById, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
+import { Card, find, findById as findCardById, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
 import { findById as findEmployee } from "../repositories/employeeRepository";
 const cryptr = new Cryptr('myTotallySecretKey');
 

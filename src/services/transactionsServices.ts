@@ -1,7 +1,9 @@
+import Cryptr from 'cryptr';
 import { findById } from "../repositories/businessRepository";
-import { Card } from "../repositories/cardRepository";
+import { Card, findByCardDetails } from "../repositories/cardRepository";
 import { findByCardId as findPayments, insert as insertPayment } from "../repositories/paymentRepository";
 import { findByCardId as findRecharges, insert as insertRecharge } from "../repositories/rechargeRepository";
+const cryptr = new Cryptr('myTotallySecretKey');
 
 export async function isActiveCard(card: Card) {
     if(card.password) {
@@ -62,4 +64,14 @@ export async function checkBalance(id: number, amount?: number) {
 
 export async function purchase(cardId: number, businessId: number, amount: number) {
     await insertPayment({cardId, businessId, amount})
+}
+
+export async function isValidCard(number: string, cardholderName: string, expirationDate: string, cvv: string) {
+    const card = await findByCardDetails(number, cardholderName, expirationDate);
+
+    if(card && cryptr.decrypt(card.securityCode) === cvv) {
+        return card
+    }
+
+    throw { type: "not found", message: "Invalid card" }
 }
