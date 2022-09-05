@@ -36,7 +36,7 @@ export async function compareShopCardType(shopType: string, cardType: string) {
     }
 }
 
-export async function checkBalance(id: number, amount: number) {
+export async function checkBalance(id: number, amount?: number) {
     const incomeArray = await findRecharges(id);
     const outcomeArray = await findPayments(id);
     let income = 0;
@@ -50,9 +50,12 @@ export async function checkBalance(id: number, amount: number) {
         outcome += outcomeArray[i].amount;
     }
     
-    const balance = income - outcome - amount;
+    const balance = income - outcome;
 
-    if(balance < 0) {
+    if(!amount) {
+        return balance
+        
+    } else if(balance - amount < 0) {
         throw { type: "denied", message: "Not enough balance" }
     }
 }
