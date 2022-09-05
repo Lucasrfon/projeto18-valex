@@ -4,14 +4,14 @@ import { checkPassword, isExpired, isRegistredCard as isRegistredPersonalCard } 
 import { checkBalance, compareShopCardType, isActiveCard, isBlocked, isRegisteredBusiness, isRegistredCard, purchase, rechargeCard } from "../services/transactionsServices";
 
 export async function requestRecharge(req: Request, res: Response) {
-    const { authorization } = req.headers;
     const { employeeId, type, amount } = req.body;
+    const APIKey = req.headers["x-api-key"];
 
-    if(!authorization) {
+    if(!APIKey) {
         throw { type: "unauthorized", message: "API Key needed" }
     }
 
-    await isValidAPIKey(authorization);
+    await isValidAPIKey(APIKey.toString());
     const card = await isRegistredCard(employeeId, type);
     await isActiveCard(card);
     await isExpired(card);
