@@ -53,8 +53,8 @@ export async function checkBalance(id: number, amount?: number) {
     const balance = income - outcome;
 
     if(!amount) {
-        return balance
-        
+        return {balance, incomeArray, outcomeArray}
+
     } else if(balance - amount < 0) {
         throw { type: "denied", message: "Not enough balance" }
     }

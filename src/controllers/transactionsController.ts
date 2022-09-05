@@ -44,6 +44,14 @@ export async function requestCardHistory(req: Request, res: Response) {
     if(!id) {
         throw { type: "not found", message: "Invalid card" }
     }
-
     
+    await isRegistredCard(id);
+    const values = await checkBalance(id);
+    const history = {
+        balance: values ? values.balance : 0,
+        transactions: values?.outcomeArray,
+        recharges: values?.incomeArray
+    }
+
+    res.status(200).send(history)
 }
