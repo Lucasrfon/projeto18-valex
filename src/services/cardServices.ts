@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
 import Cryptr from 'cryptr';
-import { Card, findById as findCardById, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
+import { Card, find, findByCardDetails, findById as findCardById, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
 import { findById as findEmployee } from "../repositories/employeeRepository";
 const cryptr = new Cryptr('myTotallySecretKey');
 
@@ -32,6 +32,9 @@ export async function generateCard(employeeId: number, type: TransactionTypes, f
     const expirationDate = `${month < 10 ? '0' + month : month}/${expirationYear}`;
     const cvv = faker.finance.creditCardCVV();
     const securityCode = cryptr.encrypt(cvv);
+    const allCards = await find();
+    const lastId = allCards.filter((value, index, array) => index === array.length - 1);
+    const id = lastId[0].id + 1;
 
     await insert({
         employeeId,
@@ -43,6 +46,7 @@ export async function generateCard(employeeId: number, type: TransactionTypes, f
         isBlocked: true,
         type
     })
+    return {id}
 }
 
 export async function isRegistredCard(id: number) {

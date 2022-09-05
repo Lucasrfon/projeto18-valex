@@ -15,9 +15,9 @@ export async function requestCardCreation(req: Request, res: Response) {
     await isUniqueCardType(employeeId, type);
     const fullName = await isValidEmployee(employeeId);
     //Depois implementar verificação do usuário pertencer a empresa
-    await generateCard(employeeId, type, fullName);
+    const {id} = await generateCard(employeeId, type, fullName);
 
-    res.status(201).send('Card created');
+    res.status(201).send(`Card created id: ${id}`);
 }
 
 export async function requestCardActivation(req: Request, res: Response) {
