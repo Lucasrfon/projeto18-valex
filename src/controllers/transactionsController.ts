@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { isValidAPIKey } from "../services/APIServices";
-import { checkPassword, isExpired, isRegistredCard, isRegistredCard as isRegistredPersonalCard } from "../services/cardServices";
+import { checkPassword, isExpired, isRegistredCard } from "../services/cardServices";
 import { checkBalance, compareShopCardType, isActiveCard, isBlocked, isRegisteredBusiness, purchase, rechargeCard } from "../services/transactionsServices";
 
 export async function requestRecharge(req: Request, res: Response) {
@@ -21,17 +21,19 @@ export async function requestRecharge(req: Request, res: Response) {
 }
 
 export async function requestPurchase(req: Request, res: Response) {
-    const {id, amount, password, business}: {id: number, amount: number, password: string, business: number} = req.body;
+    const {id, amount, password, businessId}: {id: number, amount: number, password: string, businessId: number} = req.body;
 
-    const card = await isRegistredPersonalCard(id);
+    const card = await isRegistredCard(id);
     await isActiveCard(card);
     await isExpired(card);
     await isBlocked(card);
     await checkPassword(card.password, password);
-    const shop = await isRegisteredBusiness(business);
+
+    const shop = await isRegisteredBusiness(businessId);
     await compareShopCardType(shop.type, card.type);
+
     await checkBalance(card.id, amount);
-    await purchase(card.id, business, amount);
+    await purchase(card.id, businessId, amount);
 
     res.status(200).send('Compra realizada')
 }
