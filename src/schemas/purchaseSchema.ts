@@ -8,7 +8,7 @@ const purchaseSchema = joi.object({
     "cardholderName": joi.string().pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ ]*$/).required(),
     "expirationDate": extendedJoi.date().format('MM/YY').required(),
     "amount": joi.number().integer().greater(0).required(),
-    "business": joi.string().required()
+    "business": joi.number().integer().greater(0).required()
 });
 
 export default purchaseSchema;

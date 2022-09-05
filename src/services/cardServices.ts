@@ -102,7 +102,7 @@ export async function checkPassword(cardPassword: string | undefined, password: 
     if(isPasswordValid) {
         return
     }
-    throw { type: "not found", message: "Invalid card" }
+    throw { type: "not found", message: "Wrong password" }
 }
 
 export async function toggleBlock(card: Card, isBlock: boolean) {
