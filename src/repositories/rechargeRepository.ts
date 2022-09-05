@@ -1,4 +1,4 @@
-import { connection } from "../dbStrategy/database.js";
+import { connection } from "../dbStrategy/database";
 
 export interface Recharge {
   id: number;

@@ -17,7 +17,7 @@ export async function requestCardCreation(req: Request, res: Response) {
     //Depois implementar verificação do usuário pertencer a empresa
     await generateCard(employeeId, type, fullName);
 
-    res.status(201).send('');
+    res.status(201).send('Card created');
 }
 
 export async function requestCardActivation(req: Request, res: Response) {
@@ -29,7 +29,7 @@ export async function requestCardActivation(req: Request, res: Response) {
     await isActiveCard(card);
     await activateCard(card, password);
 
-    res.status(200).send('Cartão ativado')
+    res.status(200).send('Card activated')
 }
 
 export async function toggleCardBlock(req: Request, res: Response) {
