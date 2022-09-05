@@ -21,9 +21,9 @@ export async function requestRecharge(req: Request, res: Response) {
 }
 
 export async function requestPurchase(req: Request, res: Response) {
-    const {number, cardholderName, expirationDate, amount, password, business}: {number: string, cardholderName: string, expirationDate: string, amount: number, password: string, business: number} = req.body;
+    const {id, amount, password, business}: {id: number, amount: number, password: string, business: number} = req.body;
 
-    const card = await isRegistredPersonalCard(number, cardholderName, expirationDate);
+    const card = await isRegistredPersonalCard(id);
     await isActiveCard(card);
     await isExpired(card);
     await isBlocked(card);

@@ -21,12 +21,12 @@ export async function requestCardCreation(req: Request, res: Response) {
 }
 
 export async function requestCardActivation(req: Request, res: Response) {
-    const {number, cardholderName, expirationDate, cvv, password}: {number: string, cardholderName: string, expirationDate: string, cvv: string, password: string} = req.body;
+    const {id, cvv, password}: {id: number, cvv: string, password: string} = req.body;
 
-    const card = await isRegistredCard(number, cardholderName, expirationDate);
-    await isValidCVV(card, cvv);
+    const card = await isRegistredCard(id);
     await isExpired(card);
     await isActiveCard(card);
+    await isValidCVV(card, cvv);
     await activateCard(card, password);
 
     res.status(200).send('Card activated')
@@ -34,9 +34,9 @@ export async function requestCardActivation(req: Request, res: Response) {
 
 export async function toggleCardBlock(req: Request, res: Response) {
     const isBlock = (req.path === '/block');
-    const {number, cardholderName, expirationDate, password}: {number: string, cardholderName: string, expirationDate: string, password: string} = req.body;
+    const {id, password}: {id: number, password: string} = req.body;
 
-    const card = await isRegistredCard(number, cardholderName, expirationDate);
+    const card = await isRegistredCard(id);
     await isExpired(card);
     await checkPassword(card.password, password);
     await isCardBlocked(card, isBlock);

@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
 import Cryptr from 'cryptr';
-import { Card, findByCardDetails, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
-import { findById } from "../repositories/employeeRepository";
+import { Card, findById as findCardById, findByTypeAndEmployeeId, insert, TransactionTypes, update } from "../repositories/cardRepository";
+import { findById as findEmployee } from "../repositories/employeeRepository";
 const cryptr = new Cryptr('myTotallySecretKey');
 
 export async function isValidEmployee(id: number) {
-    const employee = await findById(id)
+    const employee = await findEmployee(id)
     if(employee) {
         return employee.fullName
     }
@@ -45,8 +45,8 @@ export async function generateCard(employeeId: number, type: TransactionTypes, f
     })
 }
 
-export async function isRegistredCard(number: string, cardholderName: string, expirationDate: string) {
-    const findSecurityCode = await findByCardDetails(number, cardholderName, expirationDate);
+export async function isRegistredCard(id: number) {
+    const findSecurityCode = await findCardById(id);
 
     if(findSecurityCode) {
         return findSecurityCode
@@ -56,7 +56,9 @@ export async function isRegistredCard(number: string, cardholderName: string, ex
 }
 
 export async function isValidCVV(card: Card, cvv: string) {
-    if(card.securityCode === cvv) {
+    const securityCode = cryptr.decrypt(card.securityCode);
+    
+    if(securityCode === cvv) {
         return
     }
 
