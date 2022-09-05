@@ -38,8 +38,8 @@ export async function toggleCardBlock(req: Request, res: Response) {
 
     const card = await isRegistredCard(id);
     await isExpired(card);
-    await checkPassword(card.password, password);
     await isCardBlocked(card, isBlock);
+    await checkPassword(card.password, password);
     await toggleBlock(card, isBlock);
 
     res.status(200).send(`Card ${isBlock ? 'blocked' : 'unblocked'}`)

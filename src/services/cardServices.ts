@@ -46,10 +46,10 @@ export async function generateCard(employeeId: number, type: TransactionTypes, f
 }
 
 export async function isRegistredCard(id: number) {
-    const findSecurityCode = await findCardById(id);
+    const findCard = await findCardById(id);
 
-    if(findSecurityCode) {
-        return findSecurityCode
+    if(findCard) {
+        return findCard
     }
 
     throw { type: "not found", message: "Invalid card" }
@@ -57,7 +57,7 @@ export async function isRegistredCard(id: number) {
 
 export async function isValidCVV(card: Card, cvv: string) {
     const securityCode = cryptr.decrypt(card.securityCode);
-    
+
     if(securityCode === cvv) {
         return
     }
@@ -94,7 +94,7 @@ export async function isActiveCard(card: Card) {
 export async function activateCard(card: Card, rawPassword: string) {
     const password = bcrypt.hashSync(rawPassword, 5);
 
-    await update(card.id, {...card, password});
+    await update(card.id, {...card, password, isBlocked: false});
 }
 
 export async function isCardBlocked(card: Card, isBlock: boolean) {
