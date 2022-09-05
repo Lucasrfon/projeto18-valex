@@ -1,0 +1,63 @@
+Rota: post('/card');
+Espera: {
+    Body: employeeId (number), type (string['groceries', 'restaurant', 'transport', 'education', 'health']),
+    Header: x-api-key
+}
+Retorna: mensagem + id do card cadastrado;
+
+
+Rota: put('/card');
+Espera: {Body: id (number, integer, maior que 0), cvv (string.length[3]), password (string.length[4])};
+Retorna: mensagem
+
+
+Rota: put('/block');
+Espera: {Body: id (number, integer, maior que 0), password (string.length[4])};
+Retorna: mensagem
+
+
+Rota: put('/unblock');
+Espera: {Body: id (number, integer, maior que 0), password (string.length[4])};
+Retorna: mensagem
+
+
+Rota: get('/history/:id');
+Espera: {Param: id (number)};
+Retorna: {
+  "balance": number,
+  "transactions": [
+		{ "id", "cardId", "businessId", "businessName", "timestamp", "amount" }
+	]
+  "recharges": [
+		{ "id", "cardId", "timestamp", "amount" }
+	]
+}
+
+
+Rota: post('/recharge');
+Espera: {
+    Body: id (number, integer, maior que 0), amount (number, integer, maior que 0),
+    Header: x-api-key
+}
+Retorna: mensagem
+
+
+Rota: post('/buy');
+Espera: {
+    Body: id (number, integer, maior que 0), 
+        password (string.length[4]), 
+        amount (number, integer, maior que 0),
+        businessId (number, integer, maior que 0)
+}
+Retorna: mensagem
+
+Rota: post('/buy/online');
+Espera: {
+    Body: cvv (string.length[3])
+        number (string.format(/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/))
+        cardholderName (string), 
+        expirationDate (date.format('MM/YY')), 
+        amount (number, integer, maior que 0),
+        businessId (number, integer, maior que 0)
+}
+Retorna: mensagem
