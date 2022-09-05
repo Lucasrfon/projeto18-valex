@@ -90,11 +90,29 @@ export async function isActiveCard(card: Card) {
     if(card.password) {
         throw { type: "registred", message: "Card already activated" }
     }
-    return
 }
 
 export async function activateCard(card: Card, rawPassword: string) {
     const password = bcrypt.hashSync(rawPassword, 5);
 
     await update(card.id, {...card, password});
+}
+
+export async function isCardBlocked(card: Card, isBlock: boolean) {
+    if(card.isBlocked === isBlock) {
+        throw { type: "registred", message: `Card already ${isBlock ? 'blocked' : 'unblocked'}` }
+    }
+}
+
+export async function checkPassword(cardPassword: string | undefined, password: string) {
+    const isPasswordValid = cardPassword ? bcrypt.compareSync(password, cardPassword) : null
+
+    if(isPasswordValid) {
+        return
+    }
+    throw { type: "not found", message: "Invalid card" }
+}
+
+export async function toggleBlock(card: Card, isBlock: boolean) {
+    await update(card.id, {...card, isBlocked: isBlock});
 }
