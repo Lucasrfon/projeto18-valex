@@ -11,5 +11,6 @@ const transactionRouter = Router();
 transactionRouter.get('/history/:id', requestCardHistory);
 transactionRouter.post('/recharge', validateSchema(rechargeSchema), requestRecharge);
 transactionRouter.post('/buy', validateSchema(purchaseSchema), requestPurchase);
+transactionRouter.post('/buy/online')
 
 export default transactionRouter;
