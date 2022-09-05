@@ -8,9 +8,15 @@ const cryptr = new Cryptr('myTotallySecretKey');
 export async function isValidEmployee(id: number) {
     const employee = await findEmployee(id)
     if(employee) {
-        return employee.fullName
+        return employee
     }
     throw { type: "not found", message: "Invalid employee id" }
+}
+
+export async function isEmployeeFromCompany(employeeCompanyId: number, companyId: number) {
+    if(employeeCompanyId !== companyId) {
+        throw { type: "not found", message: "Invalid employee id" }
+    }
 }
 
 export async function isUniqueCardType(id: number, type: TransactionTypes) {

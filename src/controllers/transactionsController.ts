@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { isValidAPIKey } from "../services/APIServices";
-import { checkPassword, isExpired, isRegistredCard } from "../services/cardServices";
+import { checkPassword, isEmployeeFromCompany, isExpired, isRegistredCard, isValidEmployee } from "../services/cardServices";
 import { checkBalance, compareShopCardType, isActiveCard, isBlocked, isRegisteredBusiness, isValidCard, purchase, rechargeCard } from "../services/transactionsServices";
 
 export async function requestRecharge(req: Request, res: Response) {
@@ -11,8 +11,10 @@ export async function requestRecharge(req: Request, res: Response) {
         throw { type: "unauthorized", message: "API Key needed" }
     }
 
-    await isValidAPIKey(APIKey.toString());
+    const company = await isValidAPIKey(APIKey.toString());
     const card = await isRegistredCard(id);
+    const employee = await isValidEmployee(card.employeeId);
+    await isEmployeeFromCompany(employee.companyId, company.id);
     await isActiveCard(card);
     await isExpired(card);
     await rechargeCard(card, amount);

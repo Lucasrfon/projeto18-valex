@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { TransactionTypes } from "../repositories/cardRepository";
 import { isValidAPIKey } from "../services/APIServices";
-import { activateCard, checkPassword, generateCard, isActiveCard, isCardBlocked, isExpired, isRegistredCard, isUniqueCardType, isValidCVV, isValidEmployee, toggleBlock } from "../services/cardServices";
+import { activateCard, checkPassword, generateCard, isActiveCard, isCardBlocked, isEmployeeFromCompany, isExpired, isRegistredCard, isUniqueCardType, isValidCVV, isValidEmployee, toggleBlock } from "../services/cardServices";
 
 export async function requestCardCreation(req: Request, res: Response) {
     const { employeeId, type }: {employeeId: number, type: TransactionTypes} = req.body;
@@ -11,11 +11,11 @@ export async function requestCardCreation(req: Request, res: Response) {
         throw { type: "unauthorized", message: "API Key needed" }
     }
 
-    await isValidAPIKey(APIKey.toString());
+    const company = await isValidAPIKey(APIKey.toString());
     await isUniqueCardType(employeeId, type);
-    const fullName = await isValidEmployee(employeeId);
-    //Depois implementar verificação do usuário pertencer a empresa
-    const {id} = await generateCard(employeeId, type, fullName);
+    const employee = await isValidEmployee(employeeId);
+    await isEmployeeFromCompany(employee.companyId, company.id)
+    const {id} = await generateCard(employeeId, type, employee.fullName);
 
     res.status(201).send(`Card created id: ${id}`);
 }
