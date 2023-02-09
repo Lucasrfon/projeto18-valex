@@ -15,7 +15,7 @@ export async function requestCardCreation(req: Request, res: Response) {
     await isUniqueCardType(employeeId, type);
     const employee = await isValidEmployee(employeeId);
     await isEmployeeFromCompany(employee.companyId, company.id)
-    const {id} = await generateCard(employeeId, type, employee.fullName);
+    const id = await generateCard(employeeId, type, employee.fullName);
 
     res.status(201).send(`Card created id: ${id}`);
 }
